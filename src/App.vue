@@ -7,8 +7,7 @@
           v-for="(event, index) in events"
           :index="index"
           :url="event.url"
-          :title="event.title"
-          :tags="event.tags"
+          :tags="event.targetUsers"
           :key="index"
           @delete="handleDelete"
         />
@@ -100,19 +99,22 @@ export default {
     return {
       events: [
         {
-          url: "https://medium.com/swlh/why-bootstrapping-your-startup-is-worth-the-struggle-527a04e67d6d",
-          title: "https://medium.com/swlh/why-bootstrapping-your-startup-is-worth-the-struggle-527a04e67d6d",
-          tags: "@biasao @mirian"
-        },
-        {
-          url: "https://i.imgur.com/lmn1jqO.jpg",
-          title: "https://i.imgur.com/lmn1jqO.jpg",
-          tags: "@biasao @mateus"
-        },
-        {
-          url: "trello.com",
-          title: "trello.com",
-          tags: "@biasao @miguel",
+          "id": "",
+          "url": "",
+          "sourceUser": {
+            "handle": "",
+            "name": ""
+          },
+          "targetUsers": [
+            {
+              "handle": "",
+              "name": ""
+            },
+            {
+              "handle": "",
+              "name": ""
+            }
+          ]
         }
       ],
       modal: false,
@@ -129,10 +131,19 @@ export default {
     addEvent() {
       this.events.push({
         url: this.newValues["url"],
-        title: this.newValues["title"],
-        tags: this.newValues["tags"]
+        targetUsers: this.newValues["targetUsers"]
       });
+    },
+    getTags: function(){
+        this.$http.get("http://localhost:8080/tags").then(function(response){
+            this.events = response.data;
+        }, function(error){
+            console.log(error.statusText);
+        });
     }
+  },
+  mounted: function () {
+    this.getTags();
   }
 };
 </script>

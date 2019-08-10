@@ -4,7 +4,11 @@ import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbvue/build/css/mdb.css';
 import Vue from 'vue';
 import App from './App';
+import VueResource from 'vue-resource';
 
+Vue.config.productionTip = false;
+
+Vue.use(VueResource);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
