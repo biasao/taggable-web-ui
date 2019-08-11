@@ -11,6 +11,12 @@
           :key="index"
           @delete="handleDelete"
         />
+        <g-signin-button
+          :params="googleSignInParams"
+          @success="onSignInSuccess"
+          @error="onSignInError">
+          Sign in with Google
+        </g-signin-button>
         <mdb-row>
           <mdb-col xl="3" md="6" class="mx-auto text-center">
             <mdb-btn color="info" @click.native="modal = true">Start tagging</mdb-btn>
@@ -59,9 +65,8 @@
         <mdb-btn color="info" @click.native="addEvent">Tag</mdb-btn>
       </mdb-modal-footer>
     </mdb-modal>
-  </mdb-container>
+  </mdb-container>  
 </template>
-
 <script>
 import {
   mdbContainer,
@@ -117,8 +122,12 @@ export default {
           ]
         }
       ],
+      googleSignInParams: {
+        client_id: '955456615163-7hcgcmd9tr074e0b291ue4hssdkcqo9n.apps.googleusercontent.com'
+      },
       modal: false,
-      newValues: []
+      newValues: [],
+      user: ""
     };
   },
   methods: {
@@ -135,11 +144,23 @@ export default {
       });
     },
     getTags: function(){
+        console.log(this.user)
+        
         this.$http.get("http://localhost:8080/tags").then(function(response){
             this.events = response.data;
         }, function(error){
             console.log(error.statusText);
         });
+    },
+    onSignInSuccess (googleUser) {
+      // `googleUser` is the GoogleUser object that represents the just-signed-in user.
+      // See https://developers.google.com/identity/sign-in/web/reference#users
+      const profile = googleUser.getBasicProfile()
+      this.user = profile.U3;
+    },
+    onSignInError (error) {
+      // `error` contains any error occurred.
+      console.log('OH NOES', error)
     }
   },
   mounted: function () {

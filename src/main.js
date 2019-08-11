@@ -5,7 +5,9 @@ import 'mdbvue/build/css/mdb.css';
 import Vue from 'vue';
 import App from './App';
 import VueResource from 'vue-resource';
+import GSignInButton from 'vue-google-signin-button';
 
+Vue.use(GSignInButton);
 Vue.config.productionTip = false;
 
 Vue.use(VueResource);
