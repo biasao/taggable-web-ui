@@ -17,6 +17,7 @@
           @error="onSignInError">
           Sign in with Google
         </g-signin-button>
+        <mdb-btn color="info" @click.native="getTags">getTags</mdb-btn>
         <mdb-row>
           <mdb-col xl="3" md="6" class="mx-auto text-center">
             <mdb-btn color="info" @click.native="modal = true">Start tagging</mdb-btn>
@@ -144,19 +145,23 @@ export default {
       });
     },
     getTags: function(){
-        console.log(this.user)
-        
-        this.$http.get("http://localhost:8080/tags").then(function(response){
-            this.events = response.data;
-        }, function(error){
-            console.log(error.statusText);
-        });
+        if(this.user) {
+          var usernameAsHandle = this.user.replace(/@.*$/,"") // TODO: remove this, and let user select handle while registering
+          console.log(`get tags for ${this.user}`)
+
+          this.$http.get(`http://6d922be8.ngrok.io/feeds/${usernameAsHandle}`).then(function(response){
+              this.events = response.data.tags;
+          }, function(error){
+              console.log(error.statusText);
+          });
+        }
     },
     onSignInSuccess (googleUser) {
       // `googleUser` is the GoogleUser object that represents the just-signed-in user.
       // See https://developers.google.com/identity/sign-in/web/reference#users
       const profile = googleUser.getBasicProfile()
-      this.user = profile.U3;
+      this.user = profile.U3
+      console.log(this.user)
     },
     onSignInError (error) {
       // `error` contains any error occurred.
