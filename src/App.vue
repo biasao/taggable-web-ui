@@ -3,11 +3,12 @@
     <mdb-row>
       <mdb-col col="9">
         <h2 class="text-uppercase my-3">Your feed:</h2>
-        <Event
-          v-for="(event, index) in events"
+        <Tag
+          v-for="(tag, index) in tags"
           :index="index"
-          :url="event.url"
-          :tags="event.targetUsers"
+          :url="tag.url"
+          :targetUsers="tag.targetUsers"
+          :sourceUser="tag.sourceUser"
           :key="index"
           @delete="handleDelete"
         />
@@ -34,7 +35,7 @@
           </mdb-row>
           <h6 class="my-3">
           You have
-          <b>{{events.length}} tags</b> today.
+          <b>{{tags.length}} tags</b> today.
         </h6>
         </h1>
       </mdb-col>
@@ -51,19 +52,19 @@
             label="What do you want to share"
             icon="edit"
             type="text"
-            @input="handleInput($event, 'title')"
+            @input="handleInput($tag, 'title')"
           />
           <mdb-input
             name="tag"
             label="Tag your friends"
             icon="share"
             type="text"
-            @input="handleInput($event, 'tags')"
+            @input="handleInput($tag, 'tags')"
           />
         </form>
       </mdb-modal-body>
       <mdb-modal-footer class="justify-content-center">
-        <mdb-btn color="info" @click.native="addEvent">Tag</mdb-btn>
+        <mdb-btn color="info" @click.native="addTag">Tag</mdb-btn>
       </mdb-modal-footer>
     </mdb-modal>
   </mdb-container>  
@@ -83,7 +84,7 @@ import {
   mdbInput,
   mdbTextarea
 } from "mdbvue";
-import Event from "@/components/Event";
+import Tag from "@/components/Tag";
 export default {
   name: "App",
   components: {
@@ -99,11 +100,11 @@ export default {
     mdbModalFooter,
     mdbInput,
     mdbTextarea,
-    Event
+    Tag
   },
   data() {
     return {
-      events: [
+      tags: [
         {
           "id": "",
           "url": "",
@@ -132,14 +133,14 @@ export default {
     };
   },
   methods: {
-    handleDelete(eventIndex) {
-      this.events.splice(eventIndex, 1);
+    handleDelete(tagIndex) {
+      this.tags.splice(tagIndex, 1);
     },
     handleInput(val, type) {
       this.newValues[type] = val;
     },
-    addEvent() {
-      this.events.push({
+    addTag() {
+      this.tags.push({
         url: this.newValues["url"],
         targetUsers: this.newValues["targetUsers"]
       });
@@ -150,7 +151,7 @@ export default {
           console.log(`get tags for ${this.user}`)
 
           this.$http.get(`http://6d922be8.ngrok.io/feeds/${usernameAsHandle}`).then(function(response){
-              this.events = response.data.tags;
+              this.tags = response.data.tags;
           }, function(error){
               console.log(error.statusText);
           });
